@@ -21,14 +21,14 @@ sudo ./deploy.sh
 
 ### Step 2: Add GitHub Secrets for Auto-Deploy
 
-Go to your GitHub repository→ Settings→ Secrets and Variables→ Actions
+Go to your GitHub repository → Settings → Secrets and Variables → Actions
 
 Add these secrets:
 
 1. **VPS_HOST**: Your VPS IP address (e.g., `192.168.1.100`)
 2. **VPS_USERNAME**: Usually `root` or `ubuntu`
 3. **VPS_PORT**: SSH port (usually `22`)
-4. **VPS_SSH_KEY**: Your private SSH Key (see below)
+4. **VPS_SSH_KEY**: Your private SSH key (see below)
 
 ---
 
@@ -47,7 +47,7 @@ cat ~/.ssh/github-actions.pub >> ~/.ssh/authorized_keys
 cat ~/.ssh/github-actions
 ```
 
-Copy the entire output of the last command (including `-----BEGIN OPENSSH PRIVATE KEY-----` and `-----END OPENSSH PRIVATE KEY-----`) and paste it into GitHub secret `VPSSSSH_KEY`.
+Copy the entire output of the last command (including `-----BEGIN OPENSSH PRIVATE KEY-----` and `-----END OPENSSH PRIVATE KEY-----`) and paste it into GitHub secret `VPS_SSH_KEY`.
 
 ---
 
