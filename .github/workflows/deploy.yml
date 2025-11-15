@@ -1,0 +1,48 @@
+nname: Deploy Python App to Hostinger VPS
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 1. Checkout Code
+        uses: actions/checkout@v4
+
+      - name: 2. SSH and Deploy to VPS
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USERNAME }}
+          key: ${{ secrets.VPS_SSH_PRIVATE_KEY }}
+          port: 22
+
+          script: |
+            # 1. Project folder mein jaao (yeh path aapke log se mila)
+            cd /var/www/python.ankitrajput.xyz
+            
+            # 2. GitHub se naya code pull karo
+            git pull origin master
+            echo "✅ Code pulled from GitHub"
+            
+            # 3. Virtual environment (venv) se dependencies install karo
+            echo "Installing Python dependencies..."
+            venv/bin/pip install -r requirements.txt
+            echo "✅ Dependencies installed"
+            
+            # 4. Purana, broken PM2 process delete karo
+            pm2 delete restaurant-management || true
+            
+            # 5. Naya process Gunicorn ke saath sahi se start karo
+            echo "Starting new PM2 process with Gunicorn..."
+            
+            # ⚠️ IMPORTANT: 'main:app' ko apni actual file se badlein
+            # Agar Flask hai toh 'app:app' ho sakta hai
+            # Agar Django hai toh 'your_project_name.wsgi:application' ho sakta hai
+            pm2 start venv/bin/gunicorn --name "restaurant-management" -- --bind 0.0.0.0:8000 main:app
+            
+            echo "🚀 Deployment successful!"
