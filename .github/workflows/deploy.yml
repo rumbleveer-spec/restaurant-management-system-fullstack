@@ -46,3 +46,4 @@ jobs:
             pm2 start venv/bin/gunicorn --name "restaurant-management" -- --bind 0.0.0.0:8000 main:app
             
             echo "🚀 Deployment successful!"
+# Trigger deployment for final testing
