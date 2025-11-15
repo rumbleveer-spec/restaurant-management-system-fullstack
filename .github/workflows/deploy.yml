@@ -14,12 +14,27 @@ jobs:
         uses: actions/checkout@v3
       
       - name: Deploy to VPS
-        uses: appleboy/ssh-action@master
+        uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USERNAME }}
           key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_PORT }}
           script: |
-            cd /var/www/restaurant-management-system
+            cd /var/www/restaurant-management
             git pull origin main
-            ./deploy.sh
+            
+            # Backend deployment
+            source venv/bin/activate
+            pip install -r requirements.txt
+            
+            # Frontend deployment
+            cd frontend/restaurant-dashboard
+            npm install
+            npm run build
+            
+            # Restart services
+            sudo systemctl restart restaurant-backend
+            sudo systemctl restart nginx
+            
+            echo "✅ Deployment successful!"
