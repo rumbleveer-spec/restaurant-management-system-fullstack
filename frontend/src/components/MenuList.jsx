@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import { getMenu } from '../services/api';
 
 const MenuList = () => {
     const [menuItems, setMenuItems] = useState([]);
@@ -7,7 +7,7 @@ const MenuList = () => {
     useEffect(() => {
         const fetchMenuItems = async () => {
             try {
-                const response = await axios.get('/api/menu');
+                const response = await getMenu();
                 setMenuItems(response.data);
             } catch (error) {
                 console.error('Error fetching menu items:', error);

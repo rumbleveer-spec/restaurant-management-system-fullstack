@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import { getTables, bookTable } from '../services/api';
 
 const TableBooking = () => {
     const [tables, setTables] = useState([]);
@@ -11,7 +11,7 @@ const TableBooking = () => {
     useEffect(() => {
         const fetchTables = async () => {
             try {
-                const response = await axios.get('/api/tables');
+                const response = await getTables();
                 setTables(response.data);
             } catch (error) {
                 console.error('Error fetching tables:', error);
@@ -24,7 +24,7 @@ const TableBooking = () => {
     const handleBooking = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('/api/tables/book', {
+            const response = await bookTable({
                 tableId: selectedTable,
                 date: bookingDate,
                 customerName,

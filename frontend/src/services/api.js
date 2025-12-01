@@ -1,91 +1,40 @@
-const API_URL = 'http://localhost:5000/api'; // Adjust the URL as needed
+import axios from 'axios';
 
-export const fetchMenuItems = async () => {
-    const response = await fetch(`${API_URL}/menu`);
-    if (!response.ok) {
-        throw new Error('Failed to fetch menu items');
-    }
-    return await response.json();
-};
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
-export const createMenuItem = async (menuItem) => {
-    const response = await fetch(`${API_URL}/menu`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(menuItem),
-    });
-    if (!response.ok) {
-        throw new Error('Failed to create menu item');
-    }
-    return await response.json();
-};
+const api = axios.create({
+    baseURL: API_URL,
+});
 
-export const updateMenuItem = async (id, menuItem) => {
-    const response = await fetch(`${API_URL}/menu/${id}`, {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(menuItem),
-    });
-    if (!response.ok) {
-        throw new Error('Failed to update menu item');
+// Add a request interceptor to attach the token
+api.interceptors.request.use(
+    (config) => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            config.headers['Authorization'] = `Bearer ${token}`;
+        }
+        return config;
+    },
+    (error) => {
+        return Promise.reject(error);
     }
-    return await response.json();
-};
+);
 
-export const deleteMenuItem = async (id) => {
-    const response = await fetch(`${API_URL}/menu/${id}`, {
-        method: 'DELETE',
-    });
-    if (!response.ok) {
-        throw new Error('Failed to delete menu item');
-    }
-    return await response.json();
-};
+export const getMenu = () => api.get('/menu');
+export const addMenuItem = (item) => api.post('/menu', item);
+export const updateMenuItem = (id, item) => api.put(`/menu/${id}`, item);
+export const deleteMenuItem = (id) => api.delete(`/menu/${id}`);
 
-export const fetchOrders = async () => {
-    const response = await fetch(`${API_URL}/orders`);
-    if (!response.ok) {
-        throw new Error('Failed to fetch orders');
-    }
-    return await response.json();
-};
+export const getOrders = () => api.get('/orders');
+export const addOrder = (order) => api.post('/orders', order);
 
-export const createOrder = async (order) => {
-    const response = await fetch(`${API_URL}/orders`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(order),
-    });
-    if (!response.ok) {
-        throw new Error('Failed to create order');
-    }
-    return await response.json();
-};
+export const getTables = () => api.get('/tables');
+export const addTable = (table) => api.post('/tables', table);
+export const bookTable = (data) => api.post('/tables/book', data);
 
-export const fetchTables = async () => {
-    const response = await fetch(`${API_URL}/tables`);
-    if (!response.ok) {
-        throw new Error('Failed to fetch tables');
-    }
-    return await response.json();
-};
+export const getInventory = () => api.get('/inventory');
+export const addInventoryItem = (item) => api.post('/inventory', item);
+export const updateInventoryItem = (id, item) => api.put(`/inventory/${id}`, item);
+export const deleteInventoryItem = (id) => api.delete(`/inventory/${id}`);
 
-export const bookTable = async (table) => {
-    const response = await fetch(`${API_URL}/tables`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(table),
-    });
-    if (!response.ok) {
-        throw new Error('Failed to book table');
-    }
-    return await response.json();
-};
+export default api;

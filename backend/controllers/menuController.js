@@ -1,27 +1,63 @@
-function getAllMenuItems(req, res) {
-    // Logic to retrieve all menu items from the database
-}
+const Menu = require('../models/menu');
 
-function getMenuItemById(req, res) {
-    // Logic to retrieve a single menu item by ID
-}
+// Get all menu items
+exports.getAllMenuItems = async (req, res) => {
+    console.log('getAllMenuItems called');
+    try {
+        const menuItems = await Menu.find();
+        console.log('Menu items found:', menuItems);
+        res.status(200).json(menuItems);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
 
-function createMenuItem(req, res) {
-    // Logic to create a new menu item
-}
+// Get a single menu item by ID
+exports.getMenuItemById = async (req, res) => {
+    try {
+        const menuItem = await Menu.findById(req.params.id);
+        if (!menuItem) {
+            return res.status(404).json({ message: 'Menu item not found' });
+        }
+        res.status(200).json(menuItem);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
 
-function updateMenuItem(req, res) {
-    // Logic to update an existing menu item
-}
+// Create a new menu item
+exports.createMenuItem = async (req, res) => {
+    try {
+        const menuItem = new Menu(req.body);
+        await menuItem.save();
+        res.status(201).json(menuItem);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+};
 
-function deleteMenuItem(req, res) {
-    // Logic to delete a menu item
-}
+// Update an existing menu item
+exports.updateMenuItem = async (req, res) => {
+    try {
+        const menuItem = await Menu.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        if (!menuItem) {
+            return res.status(404).json({ message: 'Menu item not found' });
+        }
+        res.status(200).json(menuItem);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+};
 
-module.exports = {
-    getAllMenuItems,
-    getMenuItemById,
-    createMenuItem,
-    updateMenuItem,
-    deleteMenuItem
+// Delete a menu item
+exports.deleteMenuItem = async (req, res) => {
+    try {
+        const menuItem = await Menu.findByIdAndDelete(req.params.id);
+        if (!menuItem) {
+            return res.status(404).json({ message: 'Menu item not found' });
+        }
+        res.status(204).send();
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
 };

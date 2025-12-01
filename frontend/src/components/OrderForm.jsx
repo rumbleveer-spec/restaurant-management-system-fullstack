@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import { addOrder } from '../services/api';
 
 const OrderForm = () => {
     const [customerName, setCustomerName] = useState('');
@@ -22,7 +22,7 @@ const OrderForm = () => {
         };
 
         try {
-            await axios.post('/api/orders', orderData);
+            await addOrder(orderData);
             alert('Order placed successfully!');
             // Reset form
             setCustomerName('');

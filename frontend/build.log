@@ -1,0 +1,5 @@
+
+> restaurant-management-frontend@1.0.0 build
+> react-scripts build
+
+sh: react-scripts: command not found
