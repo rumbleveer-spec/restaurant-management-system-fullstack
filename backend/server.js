@@ -1,4 +1,3 @@
-```javascript
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
@@ -17,7 +16,7 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 app.use((req, res, next) => {
-    console.log(`Request received: ${ req.method } ${ req.url } `);
+    console.log(`Request received: ${req.method} ${req.url} `);
     next();
 });
 
@@ -25,13 +24,13 @@ app.use((req, res, next) => {
 // Database connection
 dbConfig();
 
-// Routes
+// Protected Routes (Auth removed for now)
 app.use('/api/menu', menuRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/tables', tableRoutes);
-app.use('/api/inventory', require('./routes/inventoryRoutes'));
+app.use('/api/inventory', inventoryRoutes);
 
 // Start the server
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${ PORT } `);
+    console.log(`Server is running on port ${PORT} `);
 });
